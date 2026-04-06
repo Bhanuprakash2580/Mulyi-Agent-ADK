@@ -14,7 +14,7 @@ from google.adk.tools.langchain_tool import LangchainTool
 from google.adk.models import Gemini
 from google.genai import types
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from adk_utils.plugins import Graceful429Plugin
 from google.adk.apps.app import App
 

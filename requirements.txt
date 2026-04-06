@@ -1,0 +1,7 @@
+google-adk
+google-cloud-logging
+google-genai
+langchain
+langchain-community
+wikipedia
+python-dotenv
