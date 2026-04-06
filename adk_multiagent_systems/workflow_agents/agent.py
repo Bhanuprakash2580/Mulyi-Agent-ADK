@@ -1,6 +1,6 @@
 import os
 import logging
-import google.cloud.logging
+# import google.cloud.logging
 import sys
 
 sys.path.append("..")
@@ -23,8 +23,8 @@ from langchain_community.utilities import WikipediaAPIWrapper
 from google.adk.tools import exit_loop
 
 # Logging setup
-cloud_logging_client = google.cloud.logging.Client()
-cloud_logging_client.setup_logging()
+# cloud_logging_client = google.cloud.logging.Client()
+# cloud_logging_client.setup_logging()
 
 load_dotenv()
 
@@ -154,6 +154,7 @@ file_writer = Agent(
         - The PLOT_OUTLINE
         - The BOX_OFFICE_REPORT
         - The CASTING_REPORT
+        - The MARKETING_REPORT
 
 PLOT_OUTLINE:
 { PLOT_OUTLINE? }
@@ -163,6 +164,9 @@ BOX_OFFICE_REPORT:
 
 CASTING_REPORT:
 { casting_report? }
+
+MARKETING_REPORT:
+{ marketing_report? }
     """,
     generate_content_config=types.GenerateContentConfig(temperature=0),
     tools=[write_file],
@@ -213,11 +217,26 @@ casting_agent = Agent(
     output_key="casting_report"
 )
 
+marketing_agent = Agent(
+    name="marketing_agent",
+    model=Gemini(model=model_name, retry_options=RETRY_OPTIONS),
+    description="Generates marketing materials like taglines and poster concepts.",
+    instruction="""
+    PLOT_OUTLINE:
+    { PLOT_OUTLINE? }
+
+    INSTRUCTIONS:
+    Based on the PLOT_OUTLINE, generate a catchy tagline, a brief visual description for a movie poster, and identify the primary target demographic.
+    """,
+    output_key="marketing_report"
+)
+
 preproduction_team = ParallelAgent(
     name="preproduction_team",
     sub_agents=[
         box_office_researcher,
-        casting_agent
+        casting_agent,
+        marketing_agent
     ]
 )
 
